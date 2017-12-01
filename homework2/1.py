@@ -1,5 +1,3 @@
-#!/usr/bin/python
-
 while True:
     try:
         year = int(input("Please enter the year between 1900 and 100000: "))
