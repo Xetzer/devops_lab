@@ -10,27 +10,20 @@ while True:
     except ValueError:
         print("This values are incorrect, try again.")
 
-for i in range(n):
-    while True:
-        try:
-            a = (input())
-            if len(a) > 100:
-                raise ValueError
-            break
-        except ValueError:
-            print("This word is too long")
-    d['A'].append(a)
-for j in range(m):
-    while True:
-        try:
-            b = (input())
-            if len(b) > 100:
-                raise ValueError
-            break
-        except ValueError:
-            print("This word is too long")
-    d['B'].append(b)
+def listFiller(ran, keyv):
+    for i in range(ran):
+        while True:
+            try:
+                i = (input())
+                if len(i) > 100:
+                    raise ValueError
+                break
+            except ValueError:
+                print("This word is too long")
+        d[keyv].append(i)
 
+listFiller(n, 'A')
+listFiller(m, 'B')
 listA = list(d.get('A'))
 listB = list(d.get('B'))
 
