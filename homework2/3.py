@@ -9,16 +9,17 @@ while True:
 
 def mults(N):
     Q = -1
-    dec = 0
+    dec = 1
     tmp = 0
     if N <= 9:
         return N
     for i in range(9, 1, -1):
         while N % i == 0:
-            tmp += i * (10 ** dec)
-            dec += 1
+            tmp += i * dec
+            dec *= 10
             N /= i
     if N == 1:
         Q = tmp
     return Q
 print(mults(N))
+
