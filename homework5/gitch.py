@@ -17,7 +17,7 @@ parser.add_argument('-o', '--openday', action='store_true', help='Days of week w
 parser.add_argument('-c', '--closeday', action='store_true', help='Days of week when requests from specified user were closed')
 parser.add_argument('-a', '--additions', action='store_true', help='Number of additions in requests from specified user')
 parser.add_argument('-d', '--deletions', action='store_true', help='Number of deletions in requests from specified user')
-parser.add_argument('-n', '--number', action='store_true', help='Number of comments in requests from specified user')
+parser.add_argument('-n', '--number', action='store_true', help='Number of review comments in requests from specified user')
 
 args = parser.parse_args()
 
@@ -41,20 +41,15 @@ username = input("GitHub username: ")
 password = getpass.getpass("Password: ")
 authen = (username, password)
 
-# Defining useful variables
+# Defining variables
 url = "https://api.github.com/repos/" + usergit + "/" + repo + "/pulls?state=all"
-urlp = "https://api.github.com/repos/" + usergit + "/" + repo + "/pulls/"
 curd = datetime.date.today()
 curt = str(datetime.datetime.now().time()).split(':')
 req = requests.get(url, auth=authen)
 numpuls = int((req.json()[0]["number"]))
 numpages = numpuls // 30 + 1
-total = 0
-closed = 0
-merged = 0
 
 # JSON retrieving
-req = requests.get(url, auth=authen)
 rej = req.json()
 while "next" in req.links.keys():
     nextp = req.links["next"]["url"]
@@ -62,6 +57,8 @@ while "next" in req.links.keys():
     rej = rej + req.json()
 
 if args.stats:
+    closed = 0
+    merged = 0
     for i in range(numpuls):
         if rej[i]["state"] == "closed":
             closed += 1
@@ -73,6 +70,7 @@ if args.stats:
     print("Overall merged/closed requests ratio, %: ", round((merged / closed) * 100, 2))
 
 if args.find:
+    total = 0
     print("\n" + "Requests made by " + puller + ":")
     for i in range(numpuls):
         if rej[i]["user"]["login"] == puller:
@@ -102,9 +100,7 @@ if args.openday:
         elif rej[i]["user"]["login"] == puller and rej[i]["state"] != "open":
             dopen = (rej[i]["created_at"].split("T")[0]).split("-")
             dopen = (calendar.day_name[datetime.date(int(dopen[0]), int(dopen[1]), int(dopen[2])).weekday()])
-            dclose = (rej[i]["closed_at"].split("T")[0]).split("-")
-            dclose = (calendar.day_name[datetime.date(int(dclose[0]), int(dclose[1]), int(dclose[2])).weekday()])
-            print(("Request number " + str(rej[i]["number"]) + " was created on " + "{}").format(dclose) + " (already closed)")
+            print(("Request number " + str(rej[i]["number"]) + " was created on " + "{}").format(dopen) + " (already closed)")
 
 if args.closeday:
     print("\n" + "Days of week when requests from " + puller + " were closed:")
@@ -118,7 +114,8 @@ if args.deletions:
     print("\n" + "Number of deletions in requests from " + puller + ":")
     for i in range(numpuls):
         if rej[i]["user"]["login"] == puller:
-            delcount = requests.get((urlp + str({})).format(i), auth=authen)
+            urlp = rej[i]["url"]
+            delcount = requests.get(urlp, auth=authen)
             if delcount.json()["deletions"]:
                 print("Request number " + str(rej[i]["number"]) + " contains " + str(delcount.json()["deletions"])+ " deletions")
             else:
@@ -128,18 +125,20 @@ if args.additions:
     print("\n" + "Number of additions in requests from " + puller + ":")
     for i in range(numpuls):
         if rej[i]["user"]["login"] == puller:
-            addcount = requests.get((urlp + str({})).format(i), auth=authen)
+            urlp = rej[i]["url"]
+            addcount = requests.get(urlp, auth=authen)
             if addcount.json()["additions"]:
                 print("Request number " + str(rej[i]["number"]) + " contains " + str(addcount.json()["additions"])+ " additions")
             else:
                 print("Request number " + str(rej[i]["number"]) + " has no additions")
 
 if args.number:
-    print("\n" + "Number of comments in requests from " + puller + ":")
+    print("\n" + "Number of review comments in requests from " + puller + ":")
     for i in range(numpuls):
         if rej[i]["user"]["login"] == puller:
-            comcount = requests.get((urlp + str({})).format(i), auth=authen)
-            if comcount.json()["comments"]:
-                print("Request number " + str(rej[i]["number"]) + " has " + str(comcount.json()["comments"])+ " comment(s)")
+            urlp = rej[i]["url"]
+            comcount = requests.get(urlp, auth=authen)
+            if comcount.json()["review_comments"]:
+                print("Request number " + str(rej[i]["number"]) + " has " + str(comcount.json()["review_comments"])+ " review comment(s)")
             else:
                 print("Request number " + str(rej[i]["number"]) + " was not commented yet")
