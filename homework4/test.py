@@ -40,12 +40,10 @@ class FormSnap(System_Mon):
         global numb
         with open(outp, "a") as log:
             log.write("{0}: {1} {2} {3} {4} {5} {6} {7} {8} {9}\n".format(self.snap, self.dat, self.cpu, self.mem, self.virt, self.diskr, self.diskw, self.disku, self.netws, self.netwr))
-            log.close()
         numb += 1
         config.set("common", "snap_num", str(numb))
         with open("settings.ini", "w") as conffile:
             config.write(conffile)
-            conffile.close()
 
 def out():
     '''Function that treates new object of FormSnap class'''
