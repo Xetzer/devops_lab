@@ -30,11 +30,9 @@ def stats():
         print("{0}: {1} {2} {3} {4} {5} {6} {7} {8} {9}".format(snap, dat, cpu, mem, virt, diskr, diskw, disku, netws, netwr))
         with open(outp, "a") as log:
             log.write("{0}: {1} {2} {3} {4} {5} {6} {7} {8} {9}\n".format(snap, dat, cpu, mem, virt, diskr, diskw, disku, netws, netwr))
-            log.close()
         numb += 1
         config.set("common", "snap_num", str(numb))
         with open("settings.ini", "w") as conffile:
             config.write(conffile)
-            conffile.close()
         sleep(per)
 stats()
