@@ -6,9 +6,9 @@ class TestUM(unittest.TestCase):
     def setUp(self):
         pass
  
-    def dicttest(self):
-        #self.assertEqual( multiply(3,4), 12)
-        self.assertEqual(pcheck.virt_env, "venv3.5")
+    def test_dict(self):
+        #checks that dict is not empty
+        self.assertTrue(pcheck.ddic)
 
 if __name__ == '__main__':
     unittest.main()
