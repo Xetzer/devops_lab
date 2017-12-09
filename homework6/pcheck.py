@@ -1,40 +1,47 @@
 '''Simple script to get python info'''
 import sys
 import subprocess
+from platform import python_version
 import json
 import yaml
 
-jfile = "pyinfo.json"
-yfile = "pyinfo.yaml"
+json_file = "pyinfo.json"
+yaml_file = "pyinfo.yaml"
 
-python_ver = subprocess.getoutput("python -V")
+version = python_version()
 virt_env = subprocess.getoutput("pyenv version-name")
-exec_loc = sys.executable
-pip_loc = subprocess.getoutput("which pip")
-#pyth_path = sys.exec_prefix
-pyth_path = subprocess.getoutput("echo $VIRTUAL_ENV")
-site_pack = next(p for p in sys.path if "site-packages" in p)
-inst_pack = subprocess.getoutput("pip freeze")
+executable = sys.executable
+pip_location = subprocess.getoutput("which pip")
+python_path = sys.exec_prefix
+pack_location = next(p for p in sys.path if "site-packages" in p)
+pip_freeze = subprocess.getoutput("pip freeze")
 
-print(("Python version: {0}\nVirtual environment: {1}\nExecutable location: {2}\nPip location: {3}\nPYTHONPATH: {4}\nSite packages location: {5}\nInstalled packages:\n{6}\n").format(python_ver, virt_env, exec_loc, pip_loc, pyth_path, site_pack, inst_pack))
-print(jfile + " and " + yfile + " files will be created.")
+print(("Python version: {0}\n"
+       "Virtual environment: {1}\n"
+       "Executable location: {2}\n"
+       "Pip location: {3}\n"
+       "PYTHONPATH: {4}\n"
+       "Site packages location: {5}\n"
+       "Installed packages:\n{6}\n").format(version, virt_env, executable, pip_location,
+                                            python_path, pack_location, pip_freeze))
+print(("{0} and {1} files will be created.\n").format(json_file, yaml_file))
 
-freeze = inst_pack.replace('==', ' ').replace('\n', ' ').split()
-pckgs = freeze[0:][::2]
-vers = freeze[1:][::2]
-inst = dict(zip(pckgs, vers))
+temp_list = pip_freeze.replace("==", " ").replace("\n", " ").split()
+packages = temp_list[0:][::2]
+versions = temp_list[1:][::2]
+installed = dict(zip(packages, versions))
 
-ddic = {'Python version': python_ver,
-        'Virtual environment': virt_env,
-        'Executable location': exec_loc,
-        'Pip location': pip_loc,
-        'PYTHONPATH': pyth_path,
-        'Site packages location': site_pack,
-        'Installed packages': {}}
-ddic['Installed packages'] = inst
+dictionary = {"Python version": version,
+        "Virtual environment": virt_env,
+        "Executable location": executable,
+        "Pip location": pip_location,
+        "PYTHONPATH": python_path,
+        "Site packages location": pack_location,
+        "Installed packages": {}}
+dictionary["Installed packages"] = installed
 
-with open(jfile, 'w') as gi:
-    gi.write(json.dumps(ddic, indent=4, sort_keys=False))
+with open(json_file, "w") as json_out:
+    json_out.write(json.dumps(dictionary, indent=4, sort_keys=False))
 
-with open(yfile, 'w') as joe:
-    joe.write(yaml.dump(ddic, default_flow_style=False))
+with open(yaml_file, "w") as yml_out:
+    yml_out.write(yaml.dump(dictionary, default_flow_style=False))

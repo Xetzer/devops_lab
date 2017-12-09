@@ -31,8 +31,8 @@ Installed packages:
   wrapt: 1.10.11
   yml: 0.0.1
   zope.interface: 4.4.3
-PYTHONPATH: /home/student/.pyenv/versions/3.5.4/envs/venv3.5
+PYTHONPATH: /home/student/.pyenv/versions/venv3.5
 Pip location: /home/student/.pyenv/versions/venv3.5/bin/pip
-Python version: Python 3.5.4
+Python version: 3.5.4
 Site packages location: /home/student/.pyenv/versions/venv3.5/lib/python3.5/site-packages
 Virtual environment: venv3.5

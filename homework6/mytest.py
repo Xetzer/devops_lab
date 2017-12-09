@@ -7,8 +7,8 @@ class TestUM(unittest.TestCase):
         pass
  
     def test_dict(self):
-        #checks that dict is not empty
-        self.assertTrue(pcheck.ddic)
+        '''Check that dictionary is not empty'''
+        self.assertTrue(pcheck.dictionary)
 
 if __name__ == '__main__':
     unittest.main()
